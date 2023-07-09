@@ -1,0 +1,4 @@
+rootProject.name = 'otus-excel'
+
+include 'item-srv'
+include 'export-srv'

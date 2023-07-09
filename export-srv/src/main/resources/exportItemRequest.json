@@ -1,0 +1,15 @@
+{
+  "fileName": "import_item",
+  "exportEntity" : "item",
+  "sheets": [
+    {
+      "name": "item"
+    },
+    {
+      "name": "itemBarcode"
+    },
+    {
+      "name": "itemPrice"
+    }
+  ]
+}

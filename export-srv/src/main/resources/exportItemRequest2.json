@@ -1,0 +1,10 @@
+{
+  "fileName": "import_item",
+  "exportEntity": "item",
+  "itemFieldFilter":
+  {
+    "code": "001",
+    "barcode": "bar_1",
+    "hierarchyCode": "H_1"
+  }
+}

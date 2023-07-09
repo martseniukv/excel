@@ -1,0 +1,33 @@
+server:
+  port: 8080
+
+spring:
+  flyway:
+    enabled: true
+    default-schema: public
+    baseline-on-migrate: true
+
+  datasource:
+#    hikari:
+#      jdbc-url: jdbc:postgresql://localhost:5432/item
+#      username: Vlad
+#      password: 12345
+    url: jdbc:postgresql://localhost:5432/excel
+    username: Vlad
+    password: 12345
+  jpa:
+    generate-ddl: true
+    hibernate:
+      format-sql: true
+      ddl-auto: validate
+
+logging:
+  level:
+    org.hibernate:
+      SQL: DEBUG
+      type:
+        descriptor:
+          sql:
+            BasicBinder: DEBUG
+    ru:
+      otus: DEBUG
