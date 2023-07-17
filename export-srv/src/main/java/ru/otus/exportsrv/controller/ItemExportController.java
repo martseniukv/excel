@@ -1,7 +1,6 @@
 package ru.otus.exportsrv.controller;
 
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -28,7 +27,8 @@ public class ItemExportController {
     private static final String DEFAULT_FILE_NAME = "ItemExport.xlsx";
     private static final String FILENAME_FORMAT = "attachment: filename=%s";
 
-    private final ExportItemService exportItemService;
+    private final ExportItemService exportItemServiceImpl;
+    private final ExportItemService exportItemServiceV2Impl;
 
     /**
      * Экспортирует элементы с использованием заданного фильтра.
@@ -38,9 +38,21 @@ public class ItemExportController {
      */
     @PostMapping(value = "/item")
     public ResponseEntity<Resource> exportItem(@RequestBody ExportItemFilter filter){
-        return getResourceResponseEntity(exportItemService.exportItem(filter));
+        return getResourceResponseEntity(exportItemServiceImpl.exportItem(filter));
     }
 
+
+    /**
+     * Экспортирует элементы с использованием заданного фильтра.
+     *
+     * @param filter фильтр для экспорта элементов
+     * @return ответ с ресурсом, содержащим экспортированные элементы, или пустой ответ, если ресурс отсутствует
+     */
+    @PostMapping(value = "/v2/item")
+    public ResponseEntity<Resource> exportItemV2(@RequestBody ExportItemFilter filter){
+        log.debug("Start export v2");
+        return getResourceResponseEntity(exportItemServiceV2Impl.exportItem(filter));
+    }
 
     private ResponseEntity<Resource> getResourceResponseEntity(Resource resource) {
         if (nonNull(resource)) {

@@ -27,7 +27,8 @@ public class ItemExportRestServiceImpl implements ItemExportRestService {
 
         var paramType = new ParameterizedTypeReference<List<ItemExportResponse>>() {};
         try {
-            return restClient.sendPost(itemUrl, filter, paramType);
+            String url = itemUrl + "/export/item";
+            return restClient.sendPost(url, filter, paramType);
         } catch (Exception e) {
            log.error(e.getMessage(), e);
         }

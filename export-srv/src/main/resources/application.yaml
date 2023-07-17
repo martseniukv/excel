@@ -1,0 +1,15 @@
+server:
+  port: 8082
+
+topic:
+  name: get.export.items
+
+
+service:
+  item-srv:
+    baseUrl: http://localhost:8080
+
+logging:
+  level:
+    ru:
+      otus: DEBUG

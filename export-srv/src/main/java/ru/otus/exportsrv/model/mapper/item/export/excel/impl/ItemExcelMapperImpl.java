@@ -21,6 +21,8 @@ import static ru.otus.exportsrv.utils.ExcelUtils.setObjectValue;
 @RequiredArgsConstructor
 public class ItemExcelMapperImpl implements ItemExcelMapper {
 
+    private static final Field[] DECLARED_FIELDS = ItemExport.class.getDeclaredFields();
+
     @Override
     public void map(Sheet sheet, List<ItemExport> items) {
         if (isNull(sheet) || isEmpty(items)) {
@@ -30,11 +32,9 @@ public class ItemExcelMapperImpl implements ItemExcelMapper {
         int rowNum = 0;
         Row headerRow = sheet.createRow(rowNum++);
 
-        Field[] declaredFields = ItemExport.class.getDeclaredFields();
-
-        for (int i = 0; i < declaredFields.length; i++) {
+        for (int i = 0; i < DECLARED_FIELDS.length; i++) {
             var cell = headerRow.createCell(i);
-            setObjectValue(cell, declaredFields[i].getName());
+            setObjectValue(cell, DECLARED_FIELDS[i].getName());
         }
 
         for (var item : emptyIfNull(items)) {

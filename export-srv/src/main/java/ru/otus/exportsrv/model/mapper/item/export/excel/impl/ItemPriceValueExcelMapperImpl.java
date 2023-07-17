@@ -2,8 +2,6 @@ package ru.otus.exportsrv.model.mapper.item.export.excel.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.springframework.stereotype.Component;
@@ -24,6 +22,8 @@ import static ru.otus.exportsrv.utils.ExcelUtils.setObjectValue;
 @RequiredArgsConstructor
 public class ItemPriceValueExcelMapperImpl implements ItemPriceValueExcelMapper {
 
+    private static final Field[] DECLARED_FIELDS = ItemPriceExport.class.getDeclaredFields();
+
     @Override
     public void map(Sheet sheet, List<ItemPriceExport> prices) {
 
@@ -33,19 +33,14 @@ public class ItemPriceValueExcelMapperImpl implements ItemPriceValueExcelMapper 
         int rowNum = 0;
         Row headerRow = sheet.createRow(rowNum++);
 
-        Field[] declaredFields = ItemPriceExport.class.getDeclaredFields();
-
-        for (int i = 0; i < declaredFields.length; i++) {
+        for (int i = 0; i < DECLARED_FIELDS.length; i++) {
             var cell = headerRow.createCell(i);
-            setObjectValue(cell, declaredFields[i].getName());
+            setObjectValue(cell, DECLARED_FIELDS[i].getName());
         }
 
         for (var price : emptyIfNull(prices)) {
 
             var row = sheet.createRow(rowNum++);
-
-            Cell cell = row.createCell(44);
-            CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
 
             row.createCell(0).setCellValue(price.getItemCode());
             row.createCell(1).setCellValue(price.getPriceListCode());

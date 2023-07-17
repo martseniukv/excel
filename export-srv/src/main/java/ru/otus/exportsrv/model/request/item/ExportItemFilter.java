@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.otus.exportsrv.model.request.ExportObjectSettings;
+import ru.otus.exportsrv.model.request.ExportSheetSettings;
 
 import java.util.List;
 
@@ -18,5 +18,5 @@ public class ExportItemFilter {
     private String hierarchyCode;
     private String barcode;
 
-    private List<ExportObjectSettings> objectSettings;
+    private List<ExportSheetSettings> sheetSettings;
 }

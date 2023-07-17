@@ -5,12 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ExportObjectSettings {
+public class ExportSheetSettings {
 
-    private int columnIndex;
-    private String filedName;
+    private String sheetName;
+    private String objectName;
+    private List<ExportObjectSettings> objectSettings;
 }

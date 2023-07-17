@@ -21,6 +21,8 @@ import static ru.otus.exportsrv.utils.ExcelUtils.setObjectValue;
 @RequiredArgsConstructor
 public class ItemBarcodeExcelMapperImpl implements ItemBarcodeExcelMapper {
 
+    private static final Field[] DECLARED_FIELDS = BarcodeExport.class.getDeclaredFields();
+
     @Override
     public void map(Sheet sheet, List<BarcodeExport> barcodes) {
         if (isNull(sheet) || isEmpty(barcodes)) {
@@ -30,11 +32,9 @@ public class ItemBarcodeExcelMapperImpl implements ItemBarcodeExcelMapper {
         int rowNum = 0;
         Row headerRow = sheet.createRow(rowNum++);
 
-        Field[] declaredFields = BarcodeExport.class.getDeclaredFields();
-
-        for (int i = 0; i < declaredFields.length; i++) {
+        for (int i = 0; i < DECLARED_FIELDS.length; i++) {
             var cell = headerRow.createCell(i);
-            setObjectValue(cell, declaredFields[i].getName());
+            setObjectValue(cell, DECLARED_FIELDS[i].getName());
         }
 
         for (var barcode : emptyIfNull(barcodes)) {
