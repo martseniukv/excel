@@ -13,4 +13,5 @@ public class BarcodeExportResponse {
 
     private String barcode;
     private String description;
+    private String isDefault;
 }

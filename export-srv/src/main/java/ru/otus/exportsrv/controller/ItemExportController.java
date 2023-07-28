@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import ru.otus.exportsrv.model.request.item.ExportItemFilter;
+import ru.otus.exportsrv.model.request.item.export.ExportItemFilter;
 import ru.otus.exportsrv.service.export.ExportItemService;
 
 import java.io.IOException;

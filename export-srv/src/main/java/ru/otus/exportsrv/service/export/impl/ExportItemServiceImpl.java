@@ -13,12 +13,11 @@ import ru.otus.exportsrv.model.mapper.item.export.ItemExportMapper;
 import ru.otus.exportsrv.model.mapper.item.export.excel.ItemBarcodeExcelMapper;
 import ru.otus.exportsrv.model.mapper.item.export.excel.ItemExcelMapper;
 import ru.otus.exportsrv.model.mapper.item.export.excel.ItemPriceValueExcelMapper;
-import ru.otus.exportsrv.model.request.item.ExportItemFilter;
+import ru.otus.exportsrv.model.request.item.export.ExportItemFilter;
 import ru.otus.exportsrv.service.export.ExportItemService;
 import ru.otus.exportsrv.service.rest.item.export.ItemExportRestService;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 
 @Slf4j
 @Service

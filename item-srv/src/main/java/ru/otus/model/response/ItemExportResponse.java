@@ -15,6 +15,7 @@ public class ItemExportResponse {
 
     private Long id;
     private String code;
+    private String name;
     private String hierarchyCode;
     private List<BarcodeExportResponse> barcodes;
     private List<ItemPriceExportResponse> prices;

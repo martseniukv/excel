@@ -5,13 +5,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.otus.model.entity.BarcodeEntity;
+import ru.otus.model.entity.HierarchyEntity;
 import ru.otus.model.entity.ItemEntity;
-import ru.otus.model.entity.ItemPriceValue;
+import ru.otus.model.entity.ItemPriceValueEntity;
 import ru.otus.model.mapper.ItemExportMapper;
 import ru.otus.model.request.item.export.ItemExportFilter;
 import ru.otus.model.response.ItemExportResponse;
 import ru.otus.repository.BarcodeRepository;
-import ru.otus.repository.ItemPriceValueValue;
+import ru.otus.repository.HierarchyRepository;
+import ru.otus.repository.ItemPriceValueRepository;
 import ru.otus.repository.ItemRepository;
 import ru.otus.repository.specification.ItemExportSpecificationBuilder;
 import ru.otus.service.export.ItemExportService;
@@ -28,8 +30,9 @@ import static java.util.Objects.isNull;
 public class ItemExportServiceImpl implements ItemExportService {
 
     private final ItemRepository itemRepository;
-    private final ItemPriceValueValue itemPriceValueValue;
+    private final ItemPriceValueRepository itemPriceValueRepository;
     private final BarcodeRepository barcodeRepository;
+    private final HierarchyRepository hierarchyRepository;
     private final ItemExportMapper itemExportMapperImpl;
 
 
@@ -47,15 +50,17 @@ public class ItemExportServiceImpl implements ItemExportService {
                 .withBarcode(filter.getBarcode());
         List<ItemEntity> all = itemRepository.findAll(builder.build());
 
-        List<Long> itemIds = all.stream()
-                .map(ItemEntity::getId)
-                .toList();
+//        List<Long> itemIds = all.stream()
+//                .map(ItemEntity::getId)
+//                .toList();
 
-        Map<Long, List<ItemPriceValue>> itemIdPriceMap = itemPriceValueValue.findByItemIdsNonDeleted(itemIds).stream()
+        Map<Long, HierarchyEntity> hierarchyMap = hierarchyRepository.findAll().stream()
+                .collect(Collectors.toMap(HierarchyEntity::getId, v -> v));
+        Map<Long, List<ItemPriceValueEntity>> itemIdPriceMap = itemPriceValueRepository.findAll().stream()
                 .collect(Collectors.groupingBy(priceValue -> priceValue.getItem().getId()));
-        Map<Long, List<BarcodeEntity>> itemIdBarcodeMap = barcodeRepository.findByItemIdsNonDeleted(itemIds).stream()
+        Map<Long, List<BarcodeEntity>> itemIdBarcodeMap = barcodeRepository.findAll().stream()
                 .collect(Collectors.groupingBy(barcode -> barcode.getItem().getId()));
 
-        return itemExportMapperImpl.getResponse(all, itemIdPriceMap, itemIdBarcodeMap);
+        return itemExportMapperImpl.getResponse(all, hierarchyMap, itemIdPriceMap, itemIdBarcodeMap);
     }
 }

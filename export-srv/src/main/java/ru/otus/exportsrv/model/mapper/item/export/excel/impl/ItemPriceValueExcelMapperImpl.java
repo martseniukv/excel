@@ -44,9 +44,9 @@ public class ItemPriceValueExcelMapperImpl implements ItemPriceValueExcelMapper 
 
             row.createCell(0).setCellValue(price.getItemCode());
             row.createCell(1).setCellValue(price.getPriceListCode());
-            row.createCell(2).setCellValue(price.getCurrencyCode());
-            row.createCell(3).setCellValue(nonNull(price.getValue()) ? price.getValue().toString() : "");
-            row.createCell(4).setCellValue(nonNull(price.getStartTime()) ? price.getStartTime().toString() : "");
+//            row.createCell(2).setCellValue(price.getCurrencyCode());
+            row.createCell(2).setCellValue(nonNull(price.getValue()) ? price.getValue().toString() : "");
+            row.createCell(3).setCellValue(nonNull(price.getStartTime()) ? price.getStartTime().toString() : "");
         }
     }
 }

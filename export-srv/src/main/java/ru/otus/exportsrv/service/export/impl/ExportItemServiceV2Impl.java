@@ -3,7 +3,6 @@ package ru.otus.exportsrv.service.export.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -14,12 +13,11 @@ import ru.otus.exportsrv.model.mapper.item.export.ItemExportMapper;
 import ru.otus.exportsrv.model.mapper.item.export.excel.v2.ItemBarcodeExcelDynamicMapper;
 import ru.otus.exportsrv.model.mapper.item.export.excel.v2.ItemExcelDynamicMapper;
 import ru.otus.exportsrv.model.mapper.item.export.excel.v2.ItemPriceValueExcelDynamicMapper;
-import ru.otus.exportsrv.model.request.item.ExportItemFilter;
+import ru.otus.exportsrv.model.request.item.export.ExportItemFilter;
 import ru.otus.exportsrv.service.export.ExportItemService;
 import ru.otus.exportsrv.service.rest.item.export.ItemExportRestService;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 
 import static org.apache.commons.collections4.CollectionUtils.emptyIfNull;
 

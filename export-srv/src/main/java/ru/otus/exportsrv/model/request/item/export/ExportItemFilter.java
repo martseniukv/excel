@@ -1,4 +1,4 @@
-package ru.otus.exportsrv.model.request.item;
+package ru.otus.exportsrv.model.request.item.export;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

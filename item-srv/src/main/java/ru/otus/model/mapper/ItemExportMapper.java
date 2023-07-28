@@ -5,7 +5,7 @@ import org.mapstruct.Mapping;
 import ru.otus.model.entity.BarcodeEntity;
 import ru.otus.model.entity.HierarchyEntity;
 import ru.otus.model.entity.ItemEntity;
-import ru.otus.model.entity.ItemPriceValue;
+import ru.otus.model.entity.ItemPriceValueEntity;
 import ru.otus.model.response.BarcodeExportResponse;
 import ru.otus.model.response.ItemExportResponse;
 import ru.otus.model.response.ItemPriceExportResponse;
@@ -14,11 +14,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Objects.nonNull;
+
 @Mapper
 public interface ItemExportMapper {
 
     default List<ItemExportResponse> getResponse(List<ItemEntity> items,
-                                                 Map<Long, List<ItemPriceValue>> itemIdPriceMap,
+                                                 Map<Long, HierarchyEntity> hierarchyMap,
+                                                 Map<Long, List<ItemPriceValueEntity>> itemIdPriceMap,
                                                  Map<Long, List<BarcodeEntity>> itemIdBarcodeMap) {
 
         List<ItemExportResponse> itemExportResponses = new ArrayList<>();
@@ -32,10 +35,14 @@ public interface ItemExportMapper {
             Long itemId = item.getId();
             itemExportResponse.id(itemId);
             itemExportResponse.code(item.getCode());
-            itemExportResponse.hierarchyCode(entityHierarchyCode(item));
+            itemExportResponse.name(item.getName());
             itemExportResponse.barcodes(getBarcodeExport(itemIdBarcodeMap.getOrDefault(itemId, new ArrayList<>())));
             itemExportResponse.prices(getItemPriceExportResponse(itemIdPriceMap.getOrDefault(itemId, new ArrayList<>())));
 
+            HierarchyEntity hierarchy = hierarchyMap.get(item.getHierarchy().getId());
+            if (nonNull(hierarchy)) {
+                itemExportResponse.hierarchyCode(hierarchy.getCode());
+            }
             itemExportResponses.add(itemExportResponse.build());
         }
         return itemExportResponses;
@@ -43,6 +50,8 @@ public interface ItemExportMapper {
 
 
     @Mapping(target = "barcode", source = "barcode")
+    @Mapping(target = "description", source = "description")
+    @Mapping(target = "isDefault", source = "default")
     BarcodeExportResponse getBarcodeExport(BarcodeEntity entity);
 
     List<BarcodeExportResponse> getBarcodeExport(List<BarcodeEntity> entity);
@@ -51,9 +60,9 @@ public interface ItemExportMapper {
     @Mapping(target = "value", source = "value")
     @Mapping(target = "startTime", source = "startTime")
     @Mapping(target = "currencyCode", source = "priceList.currency.code")
-    ItemPriceExportResponse getItemPriceExportResponse(ItemPriceValue itemPriceValue);
+    ItemPriceExportResponse getItemPriceExportResponse(ItemPriceValueEntity itemPriceValueEntity);
 
-    List<ItemPriceExportResponse> getItemPriceExportResponse(List<ItemPriceValue> itemPriceValue);
+    List<ItemPriceExportResponse> getItemPriceExportResponse(List<ItemPriceValueEntity> itemPriceValueEntity);
 
     private String entityHierarchyCode(ItemEntity itemEntity) {
         if ( itemEntity == null ) {
@@ -64,5 +73,9 @@ public interface ItemExportMapper {
             return null;
         }
         return hierarchy.getCode();
+    }
+
+    default String stringToBoolean(boolean val){
+        return val ? "Y" : "N";
     }
 }

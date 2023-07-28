@@ -12,5 +12,6 @@ import lombok.NoArgsConstructor;
 public class ItemExport {
 
     private String code;
+    private String name;
     private String hierarchyCode;
 }

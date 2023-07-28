@@ -4,6 +4,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.Version;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SourceType;
 import org.hibernate.annotations.Type;
@@ -13,6 +15,8 @@ import org.hibernate.type.YesNoConverter;
 import java.time.Instant;
 
 @MappedSuperclass
+@Getter
+@Setter
 public class AbstractEntity {
 
     @Convert(converter = YesNoConverter.class)

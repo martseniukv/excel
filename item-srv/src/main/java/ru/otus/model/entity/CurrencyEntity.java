@@ -14,7 +14,7 @@ public class CurrencyEntity extends AbstractEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "currency_generator")
-    @SequenceGenerator(name = "currency_generator", sequenceName = "currency_seq", allocationSize = 1)
+    @SequenceGenerator(name = "currency_generator", sequenceName = "currency_id_seq", allocationSize = 1)
     private Long id;
 
     @Column(name = "code", unique = true, nullable = false, length = 50)

@@ -16,7 +16,7 @@ public class HierarchyEntity extends AbstractEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hierarchy_generator")
-    @SequenceGenerator(name = "hierarchy_generator", sequenceName = "hierarchy_seq", allocationSize = 1)
+    @SequenceGenerator(name = "hierarchy_generator", sequenceName = "hierarchy_id_seq", allocationSize = 1)
     private Long id;
 
     @Column(name = "code",unique = true, nullable = false, length = 50)

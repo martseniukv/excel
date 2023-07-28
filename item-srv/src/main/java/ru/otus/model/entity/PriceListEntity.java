@@ -17,7 +17,7 @@ public class PriceListEntity extends AbstractEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "price_list_generator")
-    @SequenceGenerator(name = "price_list_generator", sequenceName = "price_list_seq", allocationSize = 1)
+    @SequenceGenerator(name = "price_list_generator", sequenceName = "price_list_id_seq", allocationSize = 1)
     private Long id;
 
     @Column(name = "code",unique = true, nullable = false, length = 50)
@@ -29,5 +29,5 @@ public class PriceListEntity extends AbstractEntity{
 
     @Builder.Default
     @OneToMany(mappedBy = "priceList")
-    private List<ItemPriceValue> priceValues = new ArrayList<>();
+    private List<ItemPriceValueEntity> priceValues = new ArrayList<>();
 }

@@ -6,6 +6,8 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Objects.isNull;
+
 @Entity
 @Builder
 @Getter
@@ -17,7 +19,7 @@ public class ItemEntity extends AbstractEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "item_generator")
-    @SequenceGenerator(name = "item_generator", sequenceName = "item_seq", allocationSize = 1)
+    @SequenceGenerator(name = "item_generator", sequenceName = "item_id_seq", allocationSize = 1)
     private Long id;
 
     @Column(name = "code", unique = true, nullable = false, length = 50)
@@ -26,7 +28,7 @@ public class ItemEntity extends AbstractEntity {
     @Column(name = "name", length = 50)
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "hierarchy_id")
     private HierarchyEntity hierarchy;
 
@@ -35,5 +37,9 @@ public class ItemEntity extends AbstractEntity {
 
     @Builder.Default
     @OneToMany(mappedBy = "item")
-    private List<ItemPriceValue> priceValues = new ArrayList<>();
+    private List<ItemPriceValueEntity> priceValues = new ArrayList<>();
+
+    public boolean isNew(){
+        return isNull(id);
+    }
 }
