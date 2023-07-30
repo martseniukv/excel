@@ -16,6 +16,7 @@ import java.util.List;
 public class ImportTaskUpdateDto {
 
     private long importTask;
+    private boolean isFinished;
     private ImportStatus status;
     private List<ImportErrorDto> errors;
 }

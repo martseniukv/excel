@@ -13,20 +13,22 @@ import static ru.otus.utils.ImportErrorDtoFactory.getErrorDto;
 
 public class AbstractValidators {
 
+    protected static final String FIELD_ARE_MANDATORY = "%s are mandatory";
+
     protected Optional<ImportErrorDto> validateString(ImportExcelColumn<String> column, boolean mandatory,
                                                       int minSize, int maxSize, String fieldName) {
 
         if (!hasText(column.getValue()) && mandatory) {
-            String errorMessage = String.format("%s are mandatory", fieldName);
-            return Optional.of(getErrorDto(errorMessage, column.getRow(), column.getColumn()));
+            String errorMessage = String.format(FIELD_ARE_MANDATORY, fieldName);
+            return Optional.of(getErrorDto(errorMessage, column.getSheetDetailId(), column.getRow(), column.getColumn()));
         }
         if (nonNull(column.getValue()) && column.getValue().length() > maxSize) {
             String errorMessage = String.format("%s size must be less than %s", fieldName, maxSize);
-            return Optional.of(getErrorDto(errorMessage, column.getRow(), column.getColumn()));
+            return Optional.of(getErrorDto(errorMessage, column.getSheetDetailId(), column.getRow(), column.getColumn()));
         }
         if (nonNull(column.getValue()) && column.getValue().length() < minSize) {
             String errorMessage = String.format("%s size must be grater than %s", fieldName, maxSize);
-            return Optional.of(getErrorDto(errorMessage));
+            return Optional.of(getErrorDto(column.getSheetDetailId(), errorMessage));
         }
         return Optional.empty();
     }
@@ -35,12 +37,12 @@ public class AbstractValidators {
                                                            boolean mandatory, String fieldName) {
 
         if (isNull(column.getValue()) && mandatory) {
-            String errorMessage = String.format("%s are mandatory", fieldName);
-            return Optional.of(getErrorDto(errorMessage, column.getRow(), column.getColumn()));
+            String errorMessage = String.format(FIELD_ARE_MANDATORY, fieldName);
+            return Optional.of(getErrorDto(errorMessage, column.getSheetDetailId(), column.getRow(), column.getColumn()));
         }
         if (nonNull(column.getValue()) && BigDecimal.ZERO.compareTo(column.getValue()) > 0) {
             String errorMessage = String.format("%s can not be negative", fieldName);
-            return Optional.of(getErrorDto(errorMessage));
+            return Optional.of(getErrorDto(column.getSheetDetailId(), errorMessage));
         }
         return Optional.empty();
     }
@@ -48,8 +50,8 @@ public class AbstractValidators {
     protected Optional<ImportErrorDto> validateNotNull(ImportExcelColumn<?> column, boolean mandatory, String fieldName) {
 
         if (isNull(column.getValue()) && mandatory) {
-            String errorMessage = String.format("%s are mandatory", fieldName);
-            return Optional.of(getErrorDto(errorMessage, column.getRow(), column.getColumn()));
+            String errorMessage = String.format(FIELD_ARE_MANDATORY, fieldName);
+            return Optional.of(getErrorDto(errorMessage, column.getSheetDetailId(), column.getRow(), column.getColumn()));
         }
         return Optional.empty();
     }

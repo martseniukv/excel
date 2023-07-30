@@ -57,42 +57,42 @@ public class BarcodeImportValidatorImpl extends AbstractValidators implements Ba
         return errors;
     }
 
-    private Optional<ImportErrorDto> checkUniqueInDb(Map<String, String> barcodeMap, ImportExcelColumn<String> barcodeColumn,
+    private Optional<ImportErrorDto> checkUniqueInDb(Map<String, String> barcodeMap, ImportExcelColumn<String> column,
                                                      String itemCode) {
 
-        String barcode = barcodeColumn.getValue();
+        String barcode = column.getValue();
         String existingItemCode = barcodeMap.get(barcode);
 
         if (nonNull(existingItemCode) && !existingItemCode.equals(itemCode)) {
             String errorMessage = String.format("Barcode: %s is not unique", barcode);
-            return of(getErrorDto(errorMessage, barcodeColumn.getRow(), barcodeColumn.getColumn()));
+            return of(getErrorDto(errorMessage, column.getSheetDetailId(), column.getRow(), column.getColumn()));
         }
         return empty();
     }
 
     private Optional<ImportErrorDto> checkDuplicate(Map<String, Integer> barcodeCountMap,
-                                                    ImportExcelColumn<String> barcodeColumn) {
+                                                    ImportExcelColumn<String> column) {
 
-        String barcode = barcodeColumn.getValue();
+        String barcode = column.getValue();
         Integer countBarcodes = barcodeCountMap.get(barcode);
 
         if (nonNull(countBarcodes) && countBarcodes > 1) {
             String errorMessage = String.format("Barcode: %s are duplicate", barcode);
-            return of(getErrorDto(errorMessage, barcodeColumn.getRow(), barcodeColumn.getColumn()));
+            return of(getErrorDto(errorMessage, column.getSheetDetailId(), column.getRow(), column.getColumn()));
         }
         return empty();
     }
 
     private Optional<ImportErrorDto> checkQuantityDefaultBarcodes(Set<Boolean> isDefaultUnique,
-                                                                  ImportExcelColumn<Boolean> isDefaultColumn) {
+                                                                  ImportExcelColumn<Boolean> column) {
 
-        if (isNull(isDefaultColumn)) {
+        if (isNull(column)) {
             return Optional.empty();
         }
-        Boolean isDefault = isDefaultColumn.getValue();
+        Boolean isDefault = column.getValue();
         if (Boolean.TRUE.equals(isDefault) && !isDefaultUnique.add(true)) {
             String errorMessage = "Сan only be one default barcode";
-            return of(getErrorDto(errorMessage, isDefaultColumn.getRow(), isDefaultColumn.getColumn()));
+            return of(getErrorDto(errorMessage, column.getSheetDetailId(), column.getRow(), column.getColumn()));
         }
         return empty();
     }

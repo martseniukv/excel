@@ -1,26 +1,18 @@
 package ru.otus.config;
 
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.*;
-import org.springframework.kafka.support.serializer.JsonDeserializer;
-import ru.otus.model.request.imports.ItemImportData;
-import ru.otus.model.request.imports.ItemImportDto;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Configuration
@@ -42,6 +34,8 @@ public class KafkaConsumerConfig {
         Map<String, Object> properties = kafkaProperties.buildProducerProperties();
         properties.put(ProducerConfig.MAX_REQUEST_SIZE_CONFIG, "50000000");//100 * 1024 * 1024); // 100 MB
         properties.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "gzip"); // Use GZIP compression
+        properties.put(ProducerConfig.BATCH_SIZE_CONFIG, "50000000");
+        properties.put(ProducerConfig.BUFFER_MEMORY_CONFIG, "50000000");
         return new DefaultKafkaProducerFactory<>(properties);
     }
 
@@ -62,25 +56,17 @@ public class KafkaConsumerConfig {
                 .build();
     }
 
-//    @Bean
-//    public ConcurrentKafkaListenerContainerFactory<String, ItemImportData>
-//    itemImportKafkaListenerContainerFactory(ObjectMapper objectMapper) {
-//        var factory = new ConcurrentKafkaListenerContainerFactory<String, ItemImportData>();
-//        JsonDeserializer<ItemImportData> itemImportDataJsonDeserializer = new JsonDeserializer<>(ItemImportData.class, objectMapper, false);
-//        factory.setConsumerFactory(itemImportDataJsonDeserializer);
-//        return factory;
-//    }
-
-    public ConsumerFactory<String, List<ItemImportDto>> itemImportConsumerFactory(ObjectMapper objectMapper) {
-        Map<String, Object> config = new HashMap<>();
-        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
-        config.put(ConsumerConfig.GROUP_ID_CONFIG, importItemGroupId);
-        config.put(ConsumerConfig.FETCH_MAX_BYTES_CONFIG, 100 * 1024 * 1024);// 100 MB
-        config.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
-
-        var javaType = objectMapper.getTypeFactory().constructParametricType(List.class, ItemImportDto.class);
-        return new DefaultKafkaConsumerFactory<>(config,
-                new StringDeserializer(),
-                new JsonDeserializer<>(javaType, objectMapper, false));
+    @Bean
+    public ConsumerFactory<String, String> consumerFactory() {
+        Map<String, Object> properties = new HashMap<>();
+        properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
+//        props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
+        properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        properties.put(ConsumerConfig.MAX_PARTITION_FETCH_BYTES_CONFIG, "50000000");
+        properties.put(ConsumerConfig.FETCH_MAX_BYTES_CONFIG, "50000000");
+        properties.put(ProducerConfig.BATCH_SIZE_CONFIG, "50000000");
+        properties.put(ProducerConfig.BUFFER_MEMORY_CONFIG, "50000000");
+        return new DefaultKafkaConsumerFactory<>(properties);
     }
 }

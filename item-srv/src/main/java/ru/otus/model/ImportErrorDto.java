@@ -15,4 +15,5 @@ public class ImportErrorDto {
     private int column;
     private long code;
     private String message;
+    private Long sheetDetailId;
 }

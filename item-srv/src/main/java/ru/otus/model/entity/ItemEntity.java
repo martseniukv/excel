@@ -2,6 +2,8 @@ package ru.otus.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,10 +34,12 @@ public class ItemEntity extends AbstractEntity {
     @JoinColumn(name = "hierarchy_id")
     private HierarchyEntity hierarchy;
 
+    @Fetch(value = FetchMode.SUBSELECT)
     @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
     private List<BarcodeEntity> barcodes;
 
     @Builder.Default
+    @Fetch(value = FetchMode.SUBSELECT)
     @OneToMany(mappedBy = "item")
     private List<ItemPriceValueEntity> priceValues = new ArrayList<>();
 

@@ -59,7 +59,6 @@ public interface ItemExportMapper {
     @Mapping(target = "priceListCode", source = "priceList.code")
     @Mapping(target = "value", source = "value")
     @Mapping(target = "startTime", source = "startTime")
-    @Mapping(target = "currencyCode", source = "priceList.currency.code")
     ItemPriceExportResponse getItemPriceExportResponse(ItemPriceValueEntity itemPriceValueEntity);
 
     List<ItemPriceExportResponse> getItemPriceExportResponse(List<ItemPriceValueEntity> itemPriceValueEntity);

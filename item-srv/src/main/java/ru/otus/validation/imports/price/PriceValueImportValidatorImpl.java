@@ -51,22 +51,23 @@ public class PriceValueImportValidatorImpl extends AbstractValidators implements
     }
 
     private Optional<ImportErrorDto> validateCode(Map<String, PriceListEntity> priceListMap,
-                                                  ImportExcelColumn<String> priceListCode) {
-        if (!priceListMap.containsKey(priceListCode.getValue())) {
-            var errorMessage = "Invalid priceCode: " + priceListCode.getValue();
-            return Optional.of(getErrorDto(errorMessage, priceListCode.getRow(), priceListCode.getColumn()));
+                                                  ImportExcelColumn<String> column) {
+        if (!priceListMap.containsKey(column.getValue())) {
+            var errorMessage = "Invalid priceCode: " + column.getValue();
+            return Optional.of(getErrorDto(errorMessage, column.getSheetDetailId(), column.getRow(), column.getColumn()));
         }
         return Optional.empty();
     }
 
-    private Optional<ImportErrorDto> checkDuplicateDateByPriceList(String priceListCode, ImportExcelColumn<Instant> startTimeColumn,
+    private Optional<ImportErrorDto> checkDuplicateDateByPriceList(String priceListCode,
+                                                                   ImportExcelColumn<Instant> column,
                                                                    Map<String, Set<Instant>> priceListDatesMap) {
 
         priceListDatesMap.putIfAbsent(priceListCode, new HashSet<>());
-        var startTime = startTimeColumn.getValue();
+        var startTime = column.getValue();
         if (!priceListDatesMap.get(priceListCode).add(startTime)) {
             var errorMessage = String.format("Duplicate start time for price: %s", priceListCode);
-            return Optional.of(getErrorDto(errorMessage, startTimeColumn.getRow(), startTimeColumn.getColumn()));
+            return Optional.of(getErrorDto(errorMessage, column.getSheetDetailId(), column.getRow(), column.getColumn()));
         }
         return Optional.empty();
     }

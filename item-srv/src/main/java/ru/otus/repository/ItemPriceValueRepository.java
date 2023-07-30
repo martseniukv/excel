@@ -13,10 +13,9 @@ import java.util.List;
 public interface ItemPriceValueRepository extends JpaRepository<ItemPriceValueEntity, Long> {
 
     @Query("""
-            SELECT ipv, pl, c
+            SELECT ipv, pl
             FROM ItemPriceValueEntity ipv
-            INNER JOIN PriceListEntity pl ON pl.id = ipv.item.id
-            INNER JOIN CurrencyEntity c ON c.id = pl.currency.id
+            JOIN FETCH ipv.priceList pl
             WHERE  ipv.isDeleted = false
               AND  ipv.item.id IN :itemIds
             """)

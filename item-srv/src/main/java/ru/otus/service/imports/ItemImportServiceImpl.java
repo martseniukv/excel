@@ -83,27 +83,6 @@ public class ItemImportServiceImpl implements ItemImportService {
                 saveBarcodes.addAll(barcodeEntities);
                 var priceEntities = itemImportMapper.getPriceEntities(item.getPrices(), itemEntity, subEntityInfo.getPriceListMap());
                 savePriceValue.addAll(priceEntities);
-
-//                if (nonNull(exsistItem)) {
-//
-//                    var itemEntity = itemImportMapper.getItemEntity(item, hierarchyMap);
-//                    itemEntity.setId(exsistItem.getId());
-//                    itemEntity.setVersion(exsistItem.getVersion());
-//                    updateItems.add(itemEntity);
-//                    var barcodeEntities = itemImportMapper.getBarcodeEntities(item.getBarcodes(), itemEntity);
-//                    saveBarcodes.addAll(barcodeEntities);
-//                    var priceEntities = itemImportMapper.getPriceEntities(item.getPrices(), itemEntity, subEntityInfo.getPriceListMap());
-//                    savePriceValue.addAll(priceEntities);
-//                } else {
-//                    var itemEntity = itemImportMapper.getItemEntity(item, hierarchyMap);
-//                    saveItems.add(itemEntity);
-//
-//                    var barcodeEntities = itemImportMapper.getBarcodeEntities(item.getBarcodes(), itemEntity);
-//                    saveBarcodes.addAll(barcodeEntities);
-//                    var priceEntities = itemImportMapper.getPriceEntities(item.getPrices(), itemEntity, subEntityInfo.getPriceListMap());
-//                    savePriceValue.addAll(priceEntities);
-//                }
-
             }
         }
 
@@ -121,13 +100,11 @@ public class ItemImportServiceImpl implements ItemImportService {
 
         ImportTaskUpdateDto updateDto = ImportTaskUpdateDto.builder()
                 .importTask(importTaskId)
+                .isFinished(importData.isLast())
                 .status(allErrors.isEmpty() ? ImportStatus.SUCCESS : ImportStatus.FAILED)
                 .errors(allErrors)
                 .build();
         importUpdateStatusProducer.sendMessage(updateDto);
-//        itemRepository.saveAll(updateItems);
-//        priceValueRepository.saveAll(updatePriceValue);
-//        barcodeRepository.saveAll(updateBarcodes);
     }
 
     private static ItemImportDataContext getItemImportDataContext(List<ItemImportDto> items) {

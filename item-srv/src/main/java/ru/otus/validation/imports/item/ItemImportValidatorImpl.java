@@ -49,13 +49,13 @@ public class ItemImportValidatorImpl extends AbstractValidators implements ItemI
     }
 
     private Optional<ImportErrorDto> validateHierarchyCode(Map<String, HierarchyEntity> hierarchyMap,
-                                                           ImportExcelColumn<String> hierarchyColumn) {
-        if (isNull(hierarchyColumn)) {
+                                                           ImportExcelColumn<String> column) {
+        if (isNull(column)) {
             return Optional.of(getErrorDto("Hierarchy are mandatory"));
         }
-        if (!hierarchyMap.containsKey(hierarchyColumn.getValue())) {
-            var errorMassage = String.format("Invalid Hierarchy code: %s", hierarchyColumn.getValue());
-            return Optional.of(getErrorDto(errorMassage, hierarchyColumn.getRow(), hierarchyColumn.getColumn()));
+        if (!hierarchyMap.containsKey(column.getValue())) {
+            var errorMassage = String.format("Invalid Hierarchy code: %s", column.getValue());
+            return Optional.of(getErrorDto(errorMassage, column.getSheetDetailId(), column.getRow(), column.getColumn()));
         }
         return Optional.empty();
     }

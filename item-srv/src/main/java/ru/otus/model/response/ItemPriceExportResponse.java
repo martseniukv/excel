@@ -15,7 +15,6 @@ import java.time.Instant;
 public class ItemPriceExportResponse {
 
     private String priceListCode;
-    private String currencyCode;
     private BigDecimal value;
     private Instant startTime;
 }
