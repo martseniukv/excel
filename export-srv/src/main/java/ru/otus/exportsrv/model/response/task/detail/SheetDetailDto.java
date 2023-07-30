@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.otus.exportsrv.model.enums.ImportObject;
+import ru.otus.exportsrv.model.response.task.error.ImportTaskErrorDto;
+
+import java.util.List;
 
 @Data
 @Builder
@@ -12,8 +15,10 @@ import ru.otus.exportsrv.model.enums.ImportObject;
 @AllArgsConstructor
 public class SheetDetailDto {
 
-    private String sheetName;
-    private ImportObject importObject;
+    private Long id;
     private int lineFrom;
     private int lineTo;
+    private String sheetName;
+    private ImportObject importObject;
+    private List<ImportTaskErrorDto> errors;
 }

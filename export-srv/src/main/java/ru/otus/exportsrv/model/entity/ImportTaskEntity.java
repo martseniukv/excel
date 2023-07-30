@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.YesNoConverter;
 import ru.otus.exportsrv.model.enums.ImportStatus;
 import ru.otus.exportsrv.model.enums.ImportType;
 
@@ -46,11 +47,19 @@ public class ImportTaskEntity extends AbstractEntity {
     @Column(name = "import_status", nullable = false)
     private ImportStatus importStatus;
 
-    @Fetch(FetchMode.SUBSELECT)
-    @OneToMany(mappedBy = "importTask", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
-    private List<ImportTaskErrorEntity> errors;
+    @Convert(converter = YesNoConverter.class)
+    @Column(name = "is_finished", nullable = false)
+    private boolean isFinished;
 
     @Fetch(FetchMode.SUBSELECT)
     @OneToMany(mappedBy = "importTask", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     private List<ImportSheetDetailEntity> sheetDetails;
+
+    public boolean getIsFinished() {
+        return isFinished;
+    }
+
+    public void setIsFinished(boolean finished) {
+        isFinished = finished;
+    }
 }

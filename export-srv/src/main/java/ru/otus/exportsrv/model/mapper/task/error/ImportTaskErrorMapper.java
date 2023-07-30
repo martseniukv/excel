@@ -11,7 +11,7 @@ import java.util.List;
 @Mapper
 public interface ImportTaskErrorMapper {
 
-    @Mapping(target = "importTask", ignore = true)
+    @Mapping(target = "sheetDetail", ignore = true)
     @Mapping(target = "rowNum", source = "row")
     @Mapping(target = "columnNum", source = "column")
     @Mapping(target = "message", source = "message")
@@ -19,7 +19,7 @@ public interface ImportTaskErrorMapper {
 
     List<ImportTaskErrorEntity> getEntity(List<ImportTaskErrorAddDto> dto);
 
-    @Mapping(target = "importTaskId", source = "importTask.id")
+    @Mapping(target = "sheetDetailId", source = "sheetDetail.id")
     @Mapping(target = "rowNum", source = "rowNum")
     @Mapping(target = "columnNum", source = "columnNum")
     @Mapping(target = "message", source = "message")

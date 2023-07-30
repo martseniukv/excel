@@ -7,19 +7,15 @@ import lombok.*;
 @Setter
 @Builder
 @Entity
-@Table(name = "import_task_error")
+@Table(name = "import_error")
 @NoArgsConstructor
 @AllArgsConstructor
 public class ImportTaskErrorEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "import_task_error_generator")
-    @SequenceGenerator(name = "import_task_error_generator", sequenceName = "import_task_error_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "import_error_generator")
+    @SequenceGenerator(name = "import_error_generator", sequenceName = "import_error_id_seq", allocationSize = 1)
     private Long id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "import_task_id")
-    private ImportTaskEntity importTask;
 
     @Column(name = "row_num")
     private int rowNum;
@@ -29,4 +25,8 @@ public class ImportTaskErrorEntity {
 
     @Column(name = "message")
     private String message;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sheet_detail_id")
+    private ImportSheetDetailEntity sheetDetail;
 }

@@ -16,7 +16,6 @@ public class ItemPriceExport {
 
     private String itemCode;
     private String priceListCode;
-    private String currencyCode;
     private BigDecimal value;
     private Instant startTime;
 }

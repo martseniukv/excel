@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import ru.otus.exportsrv.model.enums.ImportStatus;
 import ru.otus.exportsrv.model.enums.ImportType;
 import ru.otus.exportsrv.model.response.task.detail.SheetDetailDto;
-import ru.otus.exportsrv.model.response.task.error.ImportTaskErrorDto;
 
 import java.time.Instant;
 import java.util.List;
@@ -21,9 +20,18 @@ public class ImportTaskDto {
     private Long id;
     private String fileName;
     private Instant startTime;
+    private boolean isFinished;
 
     private ImportType importType;
     private ImportStatus importStatus;
-    private List<ImportTaskErrorDto> errors;
     private List<SheetDetailDto> sheetDetails;
+
+
+    public boolean getIsFinished() {
+        return isFinished;
+    }
+
+    public void setIsFinished(boolean finished) {
+        isFinished = finished;
+    }
 }

@@ -2,20 +2,23 @@ package ru.otus.exportsrv.service.imports.processor;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.springframework.stereotype.Component;
 import ru.otus.exportsrv.config.AspectLogExecuteTime;
+import ru.otus.exportsrv.model.ExcelColumnWrapper;
+import ru.otus.exportsrv.model.ImportItemPriceProcessData;
 import ru.otus.exportsrv.model.request.item.ImportItemPriceDto;
+import ru.otus.exportsrv.model.request.task.error.ImportTaskErrorAddDto;
 import ru.otus.exportsrv.model.response.task.detail.SheetDetailDto;
 import ru.otus.exportsrv.service.imports.ImportItemPriceProcessor;
+import ru.otus.exportsrv.utils.ExcelColumnProcessor;
 
 import java.util.*;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static ru.otus.exportsrv.utils.ImportExcelColumnFactory.*;
+import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
 @Slf4j
 @Component
@@ -23,20 +26,26 @@ import static ru.otus.exportsrv.utils.ImportExcelColumnFactory.*;
 @RequiredArgsConstructor
 public class ImportItemPriceProcessorImpl implements ImportItemPriceProcessor {
 
+    private final ExcelColumnProcessor excelColumnProcessorImpl;
+
     @Override
-    public Map<String, List<ImportItemPriceDto>> process(Sheet sheet, SheetDetailDto importSettings) {
+    public ImportItemPriceProcessData process(Sheet sheet, SheetDetailDto importSettings) {
+
+        var processData = new ImportItemPriceProcessData();
 
         if (isNull(sheet) || isNull(importSettings)) {
-            return new HashMap<>();
+            return processData;
         }
 
         log.info("Start process item prices");
         Map<String, List<ImportItemPriceDto>> itemPrices = new HashMap<>();
 
         boolean continueLoop = true;
-        int lineFrom = importSettings.getLineFrom();
-        int lineTo = importSettings.getLineTo();
+        Long sheetDetailId = importSettings.getId();
+        int lineFrom = importSettings.getLineFrom() - 1;
+        int lineTo = importSettings.getLineTo() - 1;
 
+        List<ImportTaskErrorAddDto> errors = new ArrayList<>();
         Iterator<Row> rowIterator = sheet.iterator();
         while (rowIterator.hasNext() && continueLoop) {
 
@@ -47,23 +56,37 @@ public class ImportItemPriceProcessorImpl implements ImportItemPriceProcessor {
             if (row.getRowNum() >= lineTo) {
                 continueLoop = false;
             }
-            Cell cell = row.getCell( 0);
+            var itemCodeWrapper = excelColumnProcessorImpl.getStringValue(row, 0, sheetDetailId, true);
+            var priceListCodeWrapper = excelColumnProcessorImpl.getStringValue(row, 1, sheetDetailId, true);
+            var priceWrapper = excelColumnProcessorImpl.getBigDecimalValue(row, 2, sheetDetailId, true);
+            var dateWrapper = excelColumnProcessorImpl.getInstantValue(row, 3, sheetDetailId, true);
 
-            if (nonNull(cell)) {
-                String itemCode = cell.getStringCellValue();
+            addErrors(errors, itemCodeWrapper);
+            addErrors(errors, priceListCodeWrapper);
+            addErrors(errors, priceWrapper);
+            addErrors(errors, dateWrapper);
 
-                if (nonNull(itemCode)) {
-                    var priceDto = ImportItemPriceDto.builder()
-                            .priceListCode(getStringColumn(row, 1))
-                            .price(getBigDecimalColumn(row, 2))
-                            .date(getInstantColumn(row, 3))
-                            .build();
-                    itemPrices.putIfAbsent(itemCode, new ArrayList<>());
-                    itemPrices.get(itemCode).add(priceDto);
-                }
+            String itemCode = itemCodeWrapper.getColumn().getValue();
+            if (nonNull(itemCode) && errors.isEmpty()) {
+                var priceDto = ImportItemPriceDto.builder()
+                        .priceListCode(priceListCodeWrapper.getColumn())
+                        .price(priceWrapper.getColumn())
+                        .date(dateWrapper.getColumn())
+                        .build();
+                itemPrices.putIfAbsent(itemCode, new ArrayList<>());
+                itemPrices.get(itemCode).add(priceDto);
             }
         }
+
+        processData.setItemPriceMap(itemPrices);
+        processData.setErrors(errors);
         log.info("End process item prices");
-        return itemPrices;
+        return processData;
+    }
+
+    private static void addErrors(List<ImportTaskErrorAddDto> errors, ExcelColumnWrapper<?> wrapper) {
+       if (isNotEmpty(wrapper.getErrors())) {
+           errors.addAll(wrapper.getErrors());
+       }
     }
 }

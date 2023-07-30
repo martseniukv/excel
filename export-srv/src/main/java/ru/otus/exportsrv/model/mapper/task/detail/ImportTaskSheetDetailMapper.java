@@ -3,11 +3,12 @@ package ru.otus.exportsrv.model.mapper.task.detail;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import ru.otus.exportsrv.model.entity.ImportSheetDetailEntity;
+import ru.otus.exportsrv.model.mapper.task.error.ImportTaskErrorMapper;
 import ru.otus.exportsrv.model.response.task.detail.SheetDetailDto;
 
 import java.util.List;
 
-@Mapper
+@Mapper(uses = {ImportTaskErrorMapper.class})
 public interface ImportTaskSheetDetailMapper {
 
     @Mapping(target = "sheetName", source = "sheetName")

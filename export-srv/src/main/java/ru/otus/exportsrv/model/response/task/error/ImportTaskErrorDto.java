@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class ImportTaskErrorDto {
 
     private Long id;
-    private Long importTaskId;
+    private Long sheetDetailId;
     private int rowNum;
     private int columnNum;
     private String message;

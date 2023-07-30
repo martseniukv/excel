@@ -1,10 +1,9 @@
-package ru.otus.exportsrv.model.request.task;
+package ru.otus.exportsrv.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.otus.exportsrv.model.enums.ImportStatus;
 import ru.otus.exportsrv.model.request.task.error.ImportTaskErrorAddDto;
 
 import java.util.List;
@@ -13,10 +12,8 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ImportTaskUpdateDto {
+public class ExcelColumnWrapper<T> {
 
-    private long importTask;
-    private boolean isFinished;
-    private ImportStatus status;
+    private ImportExcelColumn<T> column;
     private List<ImportTaskErrorAddDto> errors;
 }

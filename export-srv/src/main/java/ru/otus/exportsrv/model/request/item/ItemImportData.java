@@ -14,5 +14,6 @@ import java.util.List;
 public class ItemImportData {
 
     private long importTaskId;
+    private boolean isLast;
     private List<ItemImportDto> items;
 }

@@ -5,14 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ImportExcelColumn<T> {
+public class ResponseDto<T> {
 
-    private T value;
-    private int row;
-    private int column;
-    private Long sheetDetailId;
+    private T data;
+    private List<ErrorDto> errors;
 }

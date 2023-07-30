@@ -13,7 +13,7 @@ public interface ImportTaskErrorRepository extends JpaRepository<ImportTaskError
     @Query(value =
             """
             DELETE FROM ImportTaskErrorEntity ite
-            WHERE ite.importTask.id = :importTaskId
+            WHERE ite.sheetDetail.importTask.id = :importTaskId
             """
     )
     void deleteByImportTaskAndId(@Param("importTaskId") Long importTaskId);

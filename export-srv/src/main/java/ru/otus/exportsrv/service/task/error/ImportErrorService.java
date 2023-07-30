@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ImportErrorService {
 
-    void saveAll(List<ImportTaskErrorAddDto> errors, long importTask);
+    void saveAll(List<ImportTaskErrorAddDto> errors);
 
     void deleteByTestId(long importTask);
 }

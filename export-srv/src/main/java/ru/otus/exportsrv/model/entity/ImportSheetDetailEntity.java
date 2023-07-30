@@ -2,7 +2,11 @@ package ru.otus.exportsrv.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import ru.otus.exportsrv.model.enums.ImportObject;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -34,4 +38,8 @@ public class ImportSheetDetailEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "import_object", nullable = false)
     private ImportObject importObject;
+
+    @Fetch(FetchMode.SUBSELECT)
+    @OneToMany(mappedBy = "sheetDetail", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    private List<ImportTaskErrorEntity> errors;
 }

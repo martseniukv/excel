@@ -9,10 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ImportExcelColumn<T> {
+public class ErrorDto {
 
-    private T value;
-    private int row;
-    private int column;
-    private Long sheetDetailId;
+    private int code;
+    private String message;
 }

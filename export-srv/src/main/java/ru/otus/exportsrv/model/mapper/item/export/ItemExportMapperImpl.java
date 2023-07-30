@@ -34,6 +34,7 @@ public class ItemExportMapperImpl implements ItemExportMapper {
             var itemCode = item.getCode();
             ItemExport itemExport = ItemExport.builder()
                     .code(itemCode)
+                    .name(item.getName())
                     .hierarchyCode(item.getHierarchyCode())
                     .build();
             itemExports.add(itemExport);
@@ -45,6 +46,7 @@ public class ItemExportMapperImpl implements ItemExportMapper {
                         .itemCode(itemCode)
                         .barcode(barcode.getBarcode())
                         .description(barcode.getDescription())
+                        .isDefault(barcode.getIsDefault())
                         .build();
                 barcodes.add(barcodeExport);
             }
@@ -53,7 +55,6 @@ public class ItemExportMapperImpl implements ItemExportMapper {
                 var itemPriceExport = ItemPriceExport.builder()
                         .itemCode(itemCode)
                         .priceListCode(price.getPriceListCode())
-                        .currencyCode(price.getCurrencyCode())
                         .value(price.getValue())
                         .startTime(price.getStartTime())
                         .build();

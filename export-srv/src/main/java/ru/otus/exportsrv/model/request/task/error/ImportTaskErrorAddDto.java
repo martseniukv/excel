@@ -13,5 +13,6 @@ public class ImportTaskErrorAddDto {
 
     private int row;
     private int column;
+    private Long sheetDetailId;
     private String message;
 }
