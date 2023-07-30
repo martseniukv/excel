@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.otus.exportsrv.model.enums.Status;
 
 import java.util.List;
 
@@ -14,5 +15,6 @@ import java.util.List;
 public class ResponseDto<T> {
 
     private T data;
+    private Status status;
     private List<ErrorDto> errors;
 }

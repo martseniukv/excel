@@ -25,5 +25,4 @@ public class ItemImportController {
                                                                   @RequestPart("file") MultipartFile multipartFile) {
         return ResponseEntity.ok(importServiceImpl.documentImport(importTaskId, multipartFile));
     }
-
 }
