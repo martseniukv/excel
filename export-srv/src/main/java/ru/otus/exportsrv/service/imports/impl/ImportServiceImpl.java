@@ -32,7 +32,7 @@ public class ImportServiceImpl implements ImportService {
     public ResponseDto<ImportTaskDto> documentImport(long importTaskId, MultipartFile multipartFile) {
 
         if (isNull(multipartFile)) {
-            return getOkResponse(null);
+            return getFailedResponse(List.of(getError("File are mandatory")));
         }
         ImportTaskDto importTaskDto = importTaskService.getById(importTaskId);
 

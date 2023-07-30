@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.otus.exportsrv.exception.NotFoundException;
 import ru.otus.exportsrv.model.entity.ImportTaskEntity;
 import ru.otus.exportsrv.model.mapper.task.ImportTaskMapper;
 import ru.otus.exportsrv.model.request.task.ImportTaskAddDto;
@@ -39,7 +40,7 @@ public class ImportTaskServiceImpl implements ImportTaskService {
     public ImportTaskDto getById(long id) {
         return importTaskRepository.findById(id)
                 .map(importTaskMapper::getDto)
-                .orElse(null);
+                .orElseThrow(() -> new NotFoundException(format("Import task with id: %s not found", id)));
     }
 
     @Override
@@ -48,7 +49,7 @@ public class ImportTaskServiceImpl implements ImportTaskService {
 
         long importTask = dto.getImportTask();
         ImportTaskEntity byId = importTaskRepository.findById(importTask)
-                .orElseThrow(() -> new IllegalStateException(format("Import task with id: %s not found", importTask)));
+                .orElseThrow(() -> new NotFoundException(format("Import task with id: %s not found", importTask)));
 
         byId.setIsFinished(dto.isFinished());
         importErrorService.saveAll(dto.getErrors());
