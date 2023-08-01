@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface ItemExcelMapper {
 
-    void map(Sheet sheet, List<ItemExport> items);
+    int map(int rowNum, boolean withHeader, Sheet sheet, List<ItemExport> items);
 }

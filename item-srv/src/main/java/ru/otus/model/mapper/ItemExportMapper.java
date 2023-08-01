@@ -48,6 +48,35 @@ public interface ItemExportMapper {
         return itemExportResponses;
     }
 
+    default List<ItemExportResponse> getResponse2(List<ItemEntity> items,
+                                                 Map<Long, HierarchyEntity> hierarchyMap,
+                                                 Map<Long, List<ItemPriceExportResponse>> itemIdPriceMap,
+                                                 Map<Long, List<BarcodeExportResponse>> itemIdBarcodeMap) {
+
+        List<ItemExportResponse> itemExportResponses = new ArrayList<>();
+        if ( items == null ) {
+            return itemExportResponses;
+        }
+        for (var item : items) {
+
+            var itemExportResponse = ItemExportResponse.builder();
+
+            Long itemId = item.getId();
+            itemExportResponse.id(itemId);
+            itemExportResponse.code(item.getCode());
+            itemExportResponse.name(item.getName());
+            itemExportResponse.barcodes(itemIdBarcodeMap.getOrDefault(itemId, new ArrayList<>()));
+            itemExportResponse.prices(itemIdPriceMap.getOrDefault(itemId, new ArrayList<>()));
+
+            HierarchyEntity hierarchy = hierarchyMap.get(item.getHierarchy().getId());
+            if (nonNull(hierarchy)) {
+                itemExportResponse.hierarchyCode(hierarchy.getCode());
+            }
+            itemExportResponses.add(itemExportResponse.build());
+        }
+        return itemExportResponses;
+    }
+
 
     @Mapping(target = "barcode", source = "barcode")
     @Mapping(target = "description", source = "description")
@@ -62,17 +91,6 @@ public interface ItemExportMapper {
     ItemPriceExportResponse getItemPriceExportResponse(ItemPriceValueEntity itemPriceValueEntity);
 
     List<ItemPriceExportResponse> getItemPriceExportResponse(List<ItemPriceValueEntity> itemPriceValueEntity);
-
-    private String entityHierarchyCode(ItemEntity itemEntity) {
-        if ( itemEntity == null ) {
-            return null;
-        }
-        HierarchyEntity hierarchy = itemEntity.getHierarchy();
-        if ( hierarchy == null ) {
-            return null;
-        }
-        return hierarchy.getCode();
-    }
 
     default String stringToBoolean(boolean val){
         return val ? "Y" : "N";

@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface ItemBarcodeExcelMapper {
 
-    void map(Sheet sheet, List<BarcodeExport> barcodes);
+    int map(int rowNum, boolean withHeader, Sheet sheet, List<BarcodeExport> barcodes);
 }

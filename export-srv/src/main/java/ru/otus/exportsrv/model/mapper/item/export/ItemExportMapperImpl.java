@@ -6,11 +6,13 @@ import ru.otus.exportsrv.model.domain.item.export.BarcodeExport;
 import ru.otus.exportsrv.model.domain.item.export.ExportItems;
 import ru.otus.exportsrv.model.domain.item.export.ItemExport;
 import ru.otus.exportsrv.model.domain.item.export.ItemPriceExport;
+import ru.otus.exportsrv.model.response.item.export.ExportResponse;
 import ru.otus.exportsrv.model.response.item.export.ItemExportResponse;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Objects.isNull;
 import static org.apache.commons.collections4.CollectionUtils.emptyIfNull;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
@@ -19,9 +21,9 @@ import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 public class ItemExportMapperImpl implements ItemExportMapper {
 
     @Override
-    public ExportItems getExportItems(List<ItemExportResponse> items){
+    public ExportItems getExportItems(ExportResponse exportResponse){
 
-        if (isEmpty(items)) {
+        if (isNull(exportResponse) || isEmpty(exportResponse.getItemResponse())) {
             return new ExportItems();
         }
 
@@ -29,6 +31,7 @@ public class ItemExportMapperImpl implements ItemExportMapper {
         List<BarcodeExport> barcodes = new ArrayList<>();
         List<ItemPriceExport> prices = new ArrayList<>();
 
+        List<ItemExportResponse> items = exportResponse.getItemResponse();
         for (var item : items) {
 
             var itemCode = item.getCode();
@@ -62,6 +65,9 @@ public class ItemExportMapperImpl implements ItemExportMapper {
             }
         }
         return ExportItems.builder()
+                .totalPages(exportResponse.getTotalPages())
+                .size(exportResponse.getSize())
+                .totalElements(exportResponse.getTotalElements())
                 .items(itemExports)
                 .barcodes(barcodes)
                 .prices(prices)

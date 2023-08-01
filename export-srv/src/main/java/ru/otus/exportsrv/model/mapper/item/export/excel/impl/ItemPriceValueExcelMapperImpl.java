@@ -27,20 +27,20 @@ public class ItemPriceValueExcelMapperImpl implements ItemPriceValueExcelMapper 
     private static final Field[] DECLARED_FIELDS = ItemPriceExport.class.getDeclaredFields();
 
     @Override
-    public void map(Sheet sheet, List<ItemPriceExport> prices) {
+    public int map(int rowNum, boolean withHeader, Sheet sheet, List<ItemPriceExport> prices) {
 
         if (isNull(sheet) || isEmpty(prices)) {
-            return;
+            return rowNum;
         }
-        int rowNum = 0;
-        Row headerRow = sheet.createRow(rowNum++);
-        CellStyle defaultCellStyle = getDefaultCellStyle(sheet.getWorkbook());
-        for (int i = 0; i < DECLARED_FIELDS.length; i++) {
-            var cell = headerRow.createCell(i);
-            cell.setCellStyle(defaultCellStyle);
-            setObjectValue(cell, DECLARED_FIELDS[i].getName());
+        if (withHeader) {
+            Row headerRow = sheet.createRow(rowNum++);
+            CellStyle defaultCellStyle = getDefaultCellStyle(sheet.getWorkbook());
+            for (int i = 0; i < DECLARED_FIELDS.length; i++) {
+                var cell = headerRow.createCell(i);
+                cell.setCellStyle(defaultCellStyle);
+                setObjectValue(cell, DECLARED_FIELDS[i].getName());
+            }
         }
-
         for (var price : emptyIfNull(prices)) {
 
             var row = sheet.createRow(rowNum++);
@@ -50,5 +50,6 @@ public class ItemPriceValueExcelMapperImpl implements ItemPriceValueExcelMapper 
             row.createCell(2).setCellValue(nonNull(price.getValue()) ? price.getValue().toString() : "");
             row.createCell(3).setCellValue(nonNull(price.getStartTime()) ? price.getStartTime().toString() : "");
         }
+        return rowNum;
     }
 }

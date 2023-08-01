@@ -44,6 +44,7 @@ kafka:
 logging:
   level:
     org.hibernate:
+      engine.jdbc.batch.internal.BatchingBatch: DEBUG
       SQL: DEBUG
       type:
         descriptor:

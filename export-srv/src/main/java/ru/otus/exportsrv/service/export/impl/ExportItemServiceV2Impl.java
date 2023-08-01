@@ -39,7 +39,7 @@ public class ExportItemServiceV2Impl implements ExportItemService {
     @SneakyThrows
     public Resource exportItem(ExportItemFilter filter) {
 
-        var exportItems = itemExportMapperImpl.getExportItems(itemExportRestService.getExportItems(filter));
+        var exportItems = itemExportMapperImpl.getExportItems(itemExportRestService.getExportItems(1, 10_00, filter));
         log.info("Export items: {}", emptyIfNull(exportItems.getItems()).size());
         log.info("Export barcodes: {}", emptyIfNull(exportItems.getBarcodes()).size());
         log.info("Export prices: {}", emptyIfNull(exportItems.getPrices()).size());

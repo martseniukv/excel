@@ -1,11 +1,9 @@
 package ru.otus.service.export;
 
 import ru.otus.model.request.item.export.ItemExportFilter;
-import ru.otus.model.response.ItemExportResponse;
-
-import java.util.List;
+import ru.otus.model.response.ExportResponse;
 
 public interface ItemExportService {
 
-    List<ItemExportResponse> export(ItemExportFilter filter);
+    ExportResponse export(ItemExportFilter filter, int page, int size);
 }

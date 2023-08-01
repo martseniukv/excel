@@ -1,4 +1,4 @@
-package ru.otus.exportsrv.model.domain.item.export;
+package ru.otus.exportsrv.model.response.item.export;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,12 +11,10 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ExportItems {
+public class ExportResponse {
 
     private int totalPages;
     private int size;
     private long totalElements;
-    private List<ItemExport> items;
-    private List<BarcodeExport> barcodes;
-    private List<ItemPriceExport> prices;
+    private List<ItemExportResponse> itemResponse;
 }

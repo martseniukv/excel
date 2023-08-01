@@ -5,12 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriComponentsBuilder;
 import ru.otus.exportsrv.model.request.item.export.ExportItemFilter;
-import ru.otus.exportsrv.model.response.item.export.ItemExportResponse;
+import ru.otus.exportsrv.model.response.item.export.ExportResponse;
 import ru.otus.exportsrv.service.rest.RestClientImpl;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 @Component
@@ -23,15 +21,18 @@ public class ItemExportRestServiceImpl implements ItemExportRestService {
     private final RestClientImpl restClient;
 
     @Override
-    public List<ItemExportResponse> getExportItems(ExportItemFilter filter) {
+    public ExportResponse getExportItems(int page, int size, ExportItemFilter filter) {
 
-        var paramType = new ParameterizedTypeReference<List<ItemExportResponse>>() {};
+        var paramType = new ParameterizedTypeReference<ExportResponse>() {};
         try {
-            String url = itemUrl + "/export/item";
+            String url = UriComponentsBuilder.fromUriString(itemUrl + "/export/item")
+                    .queryParam("page", page)
+                    .queryParam("size", size)
+                    .toUriString();
             return restClient.sendPost(url, filter, paramType);
         } catch (Exception e) {
            log.error(e.getMessage(), e);
         }
-        return new ArrayList<>();
+        return new ExportResponse();
     }
 }

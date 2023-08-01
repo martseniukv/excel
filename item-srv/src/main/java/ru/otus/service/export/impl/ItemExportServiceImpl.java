@@ -2,28 +2,25 @@ package ru.otus.service.export.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.ListUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.model.entity.BarcodeEntity;
 import ru.otus.model.entity.HierarchyEntity;
 import ru.otus.model.entity.ItemEntity;
-import ru.otus.model.entity.ItemPriceValueEntity;
 import ru.otus.model.mapper.ItemExportMapper;
 import ru.otus.model.request.item.export.ItemExportFilter;
+import ru.otus.model.response.BarcodeExportResponse;
+import ru.otus.model.response.ExportResponse;
 import ru.otus.model.response.ItemExportResponse;
-import ru.otus.repository.BarcodeRepository;
-import ru.otus.repository.HierarchyRepository;
-import ru.otus.repository.ItemPriceValueRepository;
+import ru.otus.model.response.ItemPriceExportResponse;
+import ru.otus.repository.ItemExportRepository;
 import ru.otus.repository.ItemRepository;
 import ru.otus.repository.specification.ItemExportSpecificationBuilder;
 import ru.otus.service.export.ItemExportService;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.*;
 
 import static java.util.Objects.isNull;
 
@@ -33,15 +30,13 @@ import static java.util.Objects.isNull;
 public class ItemExportServiceImpl implements ItemExportService {
 
     private final ItemRepository itemRepository;
-    private final ItemPriceValueRepository itemPriceValueRepository;
-    private final BarcodeRepository barcodeRepository;
-    private final HierarchyRepository hierarchyRepository;
     private final ItemExportMapper itemExportMapperImpl;
+    private final ItemExportRepository itemExportRepository;
 
 
     @Override
-    @Transactional(readOnly = true)
-    public List<ItemExportResponse> export(ItemExportFilter filter) {
+    @Transactional
+    public ExportResponse export(ItemExportFilter filter, int page, int size) {
 
         if (isNull(filter)){
             throw new IllegalArgumentException("Filter can not be null");
@@ -51,31 +46,32 @@ public class ItemExportServiceImpl implements ItemExportService {
                 .withCode(filter.getCode())
                 .withHierarchyCode(filter.getHierarchyCode())
                 .withBarcode(filter.getBarcode());
-        List<ItemEntity> all = itemRepository.findAll(builder.build());
+        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("Id").ascending());
+        Page<ItemEntity> all = itemRepository.findAll(builder.build(), pageRequest);
 
         List<Long> itemIds = new ArrayList<>();
-        List<Long> hierarchyIds = new ArrayList<>();
+        Set<Long> hierarchyIds = new HashSet<>();
         for (ItemEntity item : all) {
             Long id = item.getId();
             itemIds.add(id);
             hierarchyIds.add(item.getHierarchy().getId());
         }
 
-        Map<Long, HierarchyEntity> hierarchyMap = new HashMap<>();
-        Map<Long, List<ItemPriceValueEntity>> itemIdPriceMap = new HashMap<>();
-        Map<Long, List<BarcodeEntity>> itemIdBarcodeMap = new HashMap<>();
+        String tempTable = itemExportRepository.getTempTable(itemIds, "itemIds");
+        String hierarchyTable = itemExportRepository.getTempTable(new ArrayList<>(hierarchyIds), "hierarchyIds");
+        Map<Long, HierarchyEntity> hierarchyMap = itemExportRepository.getHierarchyByTempTable(hierarchyTable);
+        Map<Long, List<BarcodeExportResponse>> barCodeByTempTable = itemExportRepository.getBarCodeByTempTable(tempTable);
+        Map<Long, List<ItemPriceExportResponse>> priceValueByTempTable = itemExportRepository.getPriceValueByTempTable(tempTable);
+        itemExportRepository.dropTempTable(tempTable);
+        itemExportRepository.dropTempTable(hierarchyTable);
+        List<ItemExportResponse> exportItems = itemExportMapperImpl
+                .getResponse2(all.getContent(), hierarchyMap, priceValueByTempTable, barCodeByTempTable);
 
-        ListUtils.partition(hierarchyIds, 65000).forEach(hierarchyIdList->
-                hierarchyMap.putAll(hierarchyRepository.findAllById(hierarchyIdList).stream()
-                .collect(Collectors.toMap(HierarchyEntity::getId, v -> v))));
-        ListUtils.partition(itemIds, 65000).forEach(itemIdList -> {
-
-            itemIdPriceMap.putAll(itemPriceValueRepository.findByItemIdsNonDeleted(itemIdList).stream()
-                .collect(Collectors.groupingBy(priceValue -> priceValue.getItem().getId())));
-            itemIdBarcodeMap.putAll(barcodeRepository.findByItemIdsNonDeleted(itemIdList).stream()
-                .collect(Collectors.groupingBy(barcode -> barcode.getItem().getId())));
-        });
-
-        return itemExportMapperImpl.getResponse(all, hierarchyMap, itemIdPriceMap, itemIdBarcodeMap);
+        return ExportResponse.builder()
+                .totalPages(all.getTotalPages())
+                .size(all.getSize())
+                .totalElements(all.getTotalElements())
+                .itemResponse(exportItems)
+                .build();
     }
 }

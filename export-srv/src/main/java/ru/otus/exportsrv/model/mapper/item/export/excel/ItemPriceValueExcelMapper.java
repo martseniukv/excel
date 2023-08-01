@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface ItemPriceValueExcelMapper {
 
-    void map(Sheet sheet, List<ItemPriceExport> prices);
+    int map(int rowNum, boolean withHeader, Sheet sheet, List<ItemPriceExport> prices);
 }

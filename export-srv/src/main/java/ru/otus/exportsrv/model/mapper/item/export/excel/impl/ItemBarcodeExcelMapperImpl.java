@@ -26,20 +26,19 @@ public class ItemBarcodeExcelMapperImpl implements ItemBarcodeExcelMapper {
     private static final Field[] DECLARED_FIELDS = BarcodeExport.class.getDeclaredFields();
 
     @Override
-    public void map(Sheet sheet, List<BarcodeExport> barcodes) {
+    public int map(int rowNum, boolean withHeader, Sheet sheet, List<BarcodeExport> barcodes) {
         if (isNull(sheet) || isEmpty(barcodes)) {
-            return;
+            return rowNum;
         }
-
-        int rowNum = 0;
-        Row headerRow = sheet.createRow(rowNum++);
-        CellStyle defaultCellStyle = getDefaultCellStyle(sheet.getWorkbook());
-        for (int i = 0; i < DECLARED_FIELDS.length; i++) {
-            var cell = headerRow.createCell(i);
-            cell.setCellStyle(defaultCellStyle);
-            setObjectValue(cell, DECLARED_FIELDS[i].getName());
+        if (withHeader) {
+            Row headerRow = sheet.createRow(rowNum++);
+            CellStyle defaultCellStyle = getDefaultCellStyle(sheet.getWorkbook());
+            for (int i = 0; i < DECLARED_FIELDS.length; i++) {
+                var cell = headerRow.createCell(i);
+                cell.setCellStyle(defaultCellStyle);
+                setObjectValue(cell, DECLARED_FIELDS[i].getName());
+            }
         }
-
         for (var barcode : emptyIfNull(barcodes)) {
 
             var row = sheet.createRow(rowNum++);
@@ -49,5 +48,6 @@ public class ItemBarcodeExcelMapperImpl implements ItemBarcodeExcelMapper {
             row.createCell(2).setCellValue(barcode.getDescription());
             row.createCell(3).setCellValue(barcode.getIsDefault());
         }
+        return rowNum;
     }
 }

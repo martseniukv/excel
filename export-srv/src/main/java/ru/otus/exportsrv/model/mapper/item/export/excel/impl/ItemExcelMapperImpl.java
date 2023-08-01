@@ -26,20 +26,20 @@ public class ItemExcelMapperImpl implements ItemExcelMapper {
     private static final Field[] DECLARED_FIELDS = ItemExport.class.getDeclaredFields();
 
     @Override
-    public void map(Sheet sheet, List<ItemExport> items) {
+    public int map(int rowNum, boolean withHeader, Sheet sheet, List<ItemExport> items) {
         if (isNull(sheet) || isEmpty(items)) {
-            return;
+            return rowNum;
         }
 
-        int rowNum = 0;
-        Row headerRow = sheet.createRow(rowNum++);
-        CellStyle defaultCellStyle = getDefaultCellStyle(sheet.getWorkbook());
-        for (int i = 0; i < DECLARED_FIELDS.length; i++) {
-            var cell = headerRow.createCell(i);
-            cell.setCellStyle(defaultCellStyle);
-            setObjectValue(cell, DECLARED_FIELDS[i].getName());
+        if (withHeader) {
+            Row headerRow = sheet.createRow(rowNum++);
+            CellStyle defaultCellStyle = getDefaultCellStyle(sheet.getWorkbook());
+            for (int i = 0; i < DECLARED_FIELDS.length; i++) {
+                var cell = headerRow.createCell(i);
+                cell.setCellStyle(defaultCellStyle);
+                setObjectValue(cell, DECLARED_FIELDS[i].getName());
+            }
         }
-
         for (var item : emptyIfNull(items)) {
 
             var row = sheet.createRow(rowNum++);
@@ -48,5 +48,6 @@ public class ItemExcelMapperImpl implements ItemExcelMapper {
             row.createCell(1).setCellValue(item.getName());
             row.createCell(2).setCellValue(item.getHierarchyCode());
         }
+        return rowNum;
     }
 }
