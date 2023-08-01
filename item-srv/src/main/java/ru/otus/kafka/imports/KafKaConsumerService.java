@@ -33,7 +33,7 @@ public class KafKaConsumerService {
         }
         try {
             ItemImportData itemImportData = objectMapper.readValue(message, ItemImportData.class);
-            log.info("ItemImportData: {}", itemImportData);
+
             itemImportServiceImpl.importItems(itemImportData);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);

@@ -21,7 +21,7 @@ public class ItemEntity extends AbstractEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "item_generator")
-    @SequenceGenerator(name = "item_generator", sequenceName = "item_id_seq", allocationSize = 1)
+    @SequenceGenerator(name = "item_generator", sequenceName = "item_id_seq", allocationSize = 5000)
     private Long id;
 
     @Column(name = "code", unique = true, nullable = false, length = 50)

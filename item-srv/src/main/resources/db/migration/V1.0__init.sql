@@ -1,8 +1,8 @@
 create sequence currency_id_seq start with 1 increment by 1;
 create sequence hierarchy_id_seq start with 1 increment by 1;
-create sequence item_barcode_id_seq start with 1 increment by 1;
-create sequence item_price_value_id_seq start with 1 increment by 1;
-create sequence item_id_seq start with 1 increment by 1;
+create sequence item_barcode_id_seq start with 1 increment by 5000;
+create sequence item_price_value_id_seq start with 1 increment by 5000;
+create sequence item_id_seq start with 1 increment by 5000;
 create sequence price_list_id_seq start with 1 increment by 1;
 
 create table currency

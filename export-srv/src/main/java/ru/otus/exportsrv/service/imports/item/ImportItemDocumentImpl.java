@@ -45,7 +45,7 @@ import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 @RequiredArgsConstructor
 public class ImportItemDocumentImpl implements ImportDocumentProcessor {
 
-    public static final int BATCH_SIZE = 10_000;
+    public static final int BATCH_SIZE = 5_000;
 
     private final ImportItemProcessor importItemProcessorImpl;
     private final ImportItemBarcodeProcessor importItemBarcodeProcessorImpl;
@@ -183,6 +183,7 @@ public class ImportItemDocumentImpl implements ImportDocumentProcessor {
                     .importTaskId(importTaskId)
                     .isLast(size == 1)
                     .items(importItems).build();
+            log.info("Send message: {} from: {}",  partition.size() - size, partition.size());
             importItemProducer.sendMessage(itemImportData);
             size--;
         }

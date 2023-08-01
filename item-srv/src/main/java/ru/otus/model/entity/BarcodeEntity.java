@@ -15,7 +15,7 @@ public class BarcodeEntity extends AbstractEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "barcode_generator")
-    @SequenceGenerator(name = "barcode_generator", sequenceName = "item_barcode_id_seq", allocationSize = 1)
+    @SequenceGenerator(name = "barcode_generator", sequenceName = "item_barcode_id_seq", allocationSize = 5000)
     private Long id;
 
     @Column(name = "barcode", nullable = false, length = 50)

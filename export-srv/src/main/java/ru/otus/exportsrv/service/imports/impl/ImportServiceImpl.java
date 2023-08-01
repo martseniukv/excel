@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.otus.exportsrv.config.AspectLogExecuteTime;
 import ru.otus.exportsrv.exception.TaskAlreadyProcessedException;
 import ru.otus.exportsrv.model.ResponseDto;
+import ru.otus.exportsrv.model.enums.ImportType;
 import ru.otus.exportsrv.model.response.task.ImportTaskDto;
 import ru.otus.exportsrv.service.imports.ImportService;
 import ru.otus.exportsrv.service.imports.item.ImportDocumentProcessor;
@@ -36,10 +37,11 @@ public class ImportServiceImpl implements ImportService {
         }
         ImportTaskDto importTaskDto = importTaskService.getById(importTaskId);
 
+        ImportType importType = importTaskDto.getImportType();
         var documentProcessor = importDocuments.stream()
-                .filter(importDocument -> importDocument.getType().equals(importTaskDto.getImportType()))
+                .filter(importDocument -> importDocument.getType().equals(importType))
                 .findFirst()
-                .orElseThrow(IllegalStateException::new);
+                .orElseThrow(() -> new IllegalStateException(String.format("Can not resolve ImportType: %s", importType)));
 
         if (importTaskDto.getIsFinished()) {
             throw new TaskAlreadyProcessedException(String.format("Import task: %s already finished", importTaskId));

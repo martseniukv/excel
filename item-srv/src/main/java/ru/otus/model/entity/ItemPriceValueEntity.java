@@ -17,7 +17,7 @@ public class ItemPriceValueEntity extends AbstractEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "item_price_value_generator")
-    @SequenceGenerator(name = "item_price_value_generator", sequenceName = "item_price_value_id_seq", allocationSize = 1)
+    @SequenceGenerator(name = "item_price_value_generator", sequenceName = "item_price_value_id_seq", allocationSize = 5000)
     private Long id;
 
     @ManyToOne
