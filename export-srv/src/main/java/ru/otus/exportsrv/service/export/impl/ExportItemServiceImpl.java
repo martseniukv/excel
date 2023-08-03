@@ -1,7 +1,6 @@
 package ru.otus.exportsrv.service.export.impl;
 
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.core.io.ByteArrayResource;
@@ -35,7 +34,6 @@ public class ExportItemServiceImpl implements ExportItemService {
     private final ItemPriceValueExcelMapper itemPriceValueExcelMapperImpl;
 
     @Override
-    @SneakyThrows
     public Resource exportItem(ExportItemFilter filter) {
 
         try (SXSSFWorkbook workbook = new SXSSFWorkbook(ROW_ACCESS_WINDOW_SIZE)) {
