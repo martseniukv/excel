@@ -1,0 +1,16 @@
+{
+  "importSettings": [
+    {
+      "sheetName": "item",
+      "importObjectType": 1
+    },
+    {
+      "sheetName": "itemBarcode",
+      "importObjectType": 2
+    },
+    {
+      "sheetName": "itemPrice",
+      "importObjectType": 3
+    }
+  ]
+}

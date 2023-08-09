@@ -1,0 +1,65 @@
+{
+  "code": "001",
+  "hierarchyCode": null,
+  "barcode": null,
+  "sheetSettings": [
+    {
+      "sheetName": "items",
+      "objectName": "item",
+      "objectSettings": [
+        {
+          "columnIndex": 1,
+          "filedName": "hierarchyCode"
+        },
+        {
+          "columnIndex": 2,
+          "filedName": "code"
+        }
+      ]
+    },
+    {
+      "sheetName": "prices",
+      "objectName": "itemPrice",
+      "objectSettings": [
+        {
+          "columnIndex": 1,
+          "filedName": "itemCode"
+        },
+        {
+          "columnIndex": 2,
+          "filedName": "currencyCode"
+        },
+        {
+          "columnIndex": 3,
+          "filedName": "priceListCode"
+        },
+        {
+          "columnIndex": 4,
+          "filedName": "value"
+        },
+        {
+          "columnIndex": 5,
+          "filedName": "startTime"
+        }
+      ]
+    },
+    {
+      "sheetName": "barcodes",
+      "objectName": "itemBarcode",
+      "objectSettings": [
+        {
+          "columnIndex": 1,
+          "filedName": "itemCode"
+        },
+        {
+          "columnIndex": 2,
+          "filedName": "description"
+        },
+        {
+          "columnIndex": 3,
+          "filedName": "barcode"
+        }
+      ]
+    }
+  ]
+}

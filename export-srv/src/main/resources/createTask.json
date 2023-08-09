@@ -1,0 +1,26 @@
+{
+  "fileName": "items",
+  "startTime": "2023-07-25T23:59:33.820Z",
+  "importTypeId": 1,
+  "importStatusId": 1,
+  "sheetDetails": [
+    {
+      "sheetName": "item",
+      "importObject": "ITEM",
+      "lineFrom": 2,
+      "lineTo": 10
+    },
+    {
+      "sheetName": "itemBarcode",
+      "importObject": "ITEM_BARCODE",
+      "lineFrom": 2,
+      "lineTo": 10
+    },
+    {
+      "sheetName": "itemPrice",
+      "importObject": "ITEM_PRICE",
+      "lineFrom": 2,
+      "lineTo": 10
+    }
+  ]
+}

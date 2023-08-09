@@ -1,0 +1,62 @@
+server:
+  port: 8082
+
+
+spring:
+  kafka:
+    security:
+      protocol: "PLAINTEXT"
+    bootstrap-servers:  http://localhost:9092
+  flyway:
+    enabled: true
+    default-schema: public
+    baseline-on-migrate: true
+
+  datasource:
+    #    hikari:
+    #      jdbc-url: jdbc:postgresql://localhost:5432/item
+    #      username: Vlad
+    #      password: 12345
+    url: jdbc:postgresql://localhost:5432/excel?&cachePrepStmts=true&useServerPrepStmts=true&rewriteBatchedStatements=true
+    username: Vlad
+    password: 12345
+  jpa:
+    generate-ddl: true
+    hibernate:
+      format-sql: true
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 10000
+          batch_versioned_data: true
+        generate_statistics: true
+        order_updates: true
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 100MB
+      max-request-size: 100MB
+#  http:
+#    multipart:
+#      enabled: true
+#      max-file-size: 60MB
+#      max-request-size: 60MB
+
+
+topic:
+  import:
+    task:
+      update-status: import.task.update.status
+      update-status-group-id: update-status.1
+    item: import.item
+
+
+service:
+  item-srv:
+    baseUrl: http://localhost:8080
+
+logging:
+  level:
+    ru:
+      otus: DEBUG
