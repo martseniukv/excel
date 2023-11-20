@@ -20,6 +20,7 @@ import ru.otus.repository.ItemPriceValueRepository;
 import ru.otus.repository.ItemRepository;
 import ru.otus.validation.imports.item.ItemImportValidator;
 
+import java.time.Instant;
 import java.util.*;
 
 import static java.util.Objects.isNull;
@@ -74,9 +75,10 @@ public class ItemImportServiceImpl implements ItemImportService {
                 ItemEntity existingItem = itemMap.get(itemCode.getValue());
                 var itemEntity = itemImportMapper.getItemEntity(item, hierarchyMap);
                 if (nonNull(existingItem)) {
-
                     itemEntity.setId(existingItem.getId());
                     itemEntity.setVersion(existingItem.getVersion());
+                } else {
+                    itemEntity.setCreateDate(Instant.now());
                 }
                 saveItems.add(itemEntity);
                 var barcodeEntities = itemImportMapper.getBarcodeEntities(item.getBarcodes(), itemEntity);

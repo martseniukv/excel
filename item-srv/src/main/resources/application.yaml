@@ -3,53 +3,72 @@ server:
 
 spring:
   kafka:
-    security:
-      protocol: "PLAINTEXT"
-    bootstrap-servers: http://localhost:9092
+    bootstrap-servers: "pkc-7xoy1.eu-central-1.aws.confluent.cloud:9092"
+    properties:
+      bootstrap-servers: "pkc-7xoy1.eu-central-1.aws.confluent.cloud:9092"
+      security:
+        session:
+          timeout:
+            ms: "45000"
+        protocol: "SASL_SSL"
+      schema:
+        registry:
+          url: "{URL}"
+      basic:
+        auth:
+          credentials:
+            source: "USER_INFO"
+          user:
+            info: "{USER_INFO}"
+      sasl:
+        jaas:
+          config: "org.apache.kafka.common.security.plain.PlainLoginModule required 
+          username='{USERNAME}' 
+          password='{PASSWORD}"
+        mechanism: "PLAIN"
+        security:
+          protocol: "SASL_SSL"
+        ssl:
+          endpoint:
+            identification:
+              algorithm: "https"
   flyway:
     enabled: true
     default-schema: public
     baseline-on-migrate: true
-
   datasource:
-#    hikari:
-#      jdbc-url: jdbc:postgresql://localhost:5432/item
-#      username: Vlad
-#      password: 12345
     url: jdbc:postgresql://localhost:5432/item?&cachePrepStmts=true&useServerPrepStmts=true&rewriteBatchedStatements=true
     username: Vlad
     password: 12345
   jpa:
+    properties:
+      hibernate:
+        generate_statistics: true
+        order_updates: true
+        order_inserts: true
+        jdbc:
+          batch_size: 50_000
+          batch_versioned_data: true
+
     generate-ddl: true
     hibernate:
       format-sql: true
       ddl-auto: validate
-    properties:
-      hibernate:
-        jdbc:
-          batch_size: 10000
-          batch_versioned_data: true
-        generate_statistics: true
-        order_updates: true
+      show-sql: true
 
 
 kafka:
   import:
     task:
-      update-status: import.task.update.status
+      update-status: otus.excel.import.task.update.status
     item:
-      topic: import.item
+      topic: otus.excel.import
       group-id: import_item
 
 logging:
   level:
     org.hibernate:
       engine.jdbc.batch.internal.BatchingBatch: DEBUG
-      SQL: DEBUG
-      type:
-        descriptor:
-          sql:
-            BasicBinder: DEBUG
     ru:
       otus: DEBUG
 

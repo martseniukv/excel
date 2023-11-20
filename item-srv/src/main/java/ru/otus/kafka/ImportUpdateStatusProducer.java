@@ -1,9 +1,8 @@
 package ru.otus.kafka;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
@@ -19,8 +18,8 @@ public class ImportUpdateStatusProducer {
     @Value("${kafka.import.task.update-status}")
     private String updateStatusTopic;
 
-    private final ObjectMapper objectMapper;
-    private final KafkaTemplate<String, String> kafkaTemplate;
+    @Qualifier("importUpdateStatusKafkaTemplate")
+    private final KafkaTemplate<String, ImportTaskUpdateDto> kafkaTemplate;
 
     public void sendMessage(ImportTaskUpdateDto updateDto)  {
 
@@ -28,14 +27,11 @@ public class ImportUpdateStatusProducer {
             log.debug("ImportUpdateStatusProducer updateDto isNull");
             return;
         }
-        String itemMsg = null;
+        log.info("import update status produced {}", updateDto);
         try {
-            itemMsg = objectMapper.writeValueAsString(updateDto);
-        } catch (JsonProcessingException e) {
+            kafkaTemplate.send(updateStatusTopic, updateDto);
+        } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
-        log.info("import update status produced {}", itemMsg);
-        kafkaTemplate.send(updateStatusTopic, itemMsg);
-
     }
 }

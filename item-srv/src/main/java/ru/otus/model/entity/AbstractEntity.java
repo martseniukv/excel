@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SourceType;
-import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.YesNoConverter;
 
@@ -27,11 +26,11 @@ public class AbstractEntity {
     @Column(name = "version", nullable = false)
     private Long version;
 
-    @CreationTimestamp(source = SourceType.DB)
-    @Column(name = "create_date", nullable = false)
+    @CreationTimestamp(source = SourceType.VM)
+    @Column(name = "create_date", nullable = false, updatable = false)
     private Instant createDate;
 
-    @UpdateTimestamp(source = SourceType.DB)
+    @UpdateTimestamp(source = SourceType.VM)
     @Column(name = "update_date", nullable = false)
     private Instant updateDate;
 }

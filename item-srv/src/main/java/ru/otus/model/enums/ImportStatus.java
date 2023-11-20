@@ -5,10 +5,11 @@ import lombok.Getter;
 @Getter
 public enum ImportStatus {
 
-    SUCCESS(1L),
-    VALIDATE_FILE(2L),
-    VALIDATION_ERROR(3L),
-    FAILED(4L)
+    CREATED(1L),
+    SUCCESS(2L),
+    VALIDATE_FILE(3L),
+    VALIDATION_ERROR(4L),
+    FAILED(5L)
     ;
 
     private final long id;
