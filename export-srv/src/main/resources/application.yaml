@@ -4,20 +4,42 @@ server:
 
 spring:
   kafka:
-    security:
-      protocol: "PLAINTEXT"
-    bootstrap-servers:  http://localhost:9092
+    bootstrap-servers: "pkc-7xoy1.eu-central-1.aws.confluent.cloud:9092"
+    properties:
+      bootstrap-servers: "pkc-7xoy1.eu-central-1.aws.confluent.cloud:9092"
+      security:
+        session:
+          timeout:
+            ms: "45000"
+        protocol: "SASL_SSL"
+      schema:
+        registry:
+          url: "https://url"
+      basic:
+        auth:
+          credentials:
+            source: "USER_INFO"
+          user:
+            info: "INFO_CREDENTIALS"
+      sasl:
+        jaas:
+          config: "org.apache.kafka.common.security.plain.PlainLoginModule required 
+          username='{USER_NAME}' 
+          password='{PASSWORD}';"
+        mechanism: "PLAIN"
+        security:
+          protocol: "SASL_SSL"
+        ssl:
+          endpoint:
+            identification:
+              algorithm: "https"
   flyway:
     enabled: true
     default-schema: public
     baseline-on-migrate: true
 
   datasource:
-    #    hikari:
-    #      jdbc-url: jdbc:postgresql://localhost:5432/item
-    #      username: Vlad
-    #      password: 12345
-    url: jdbc:postgresql://localhost:5432/excel?&cachePrepStmts=true&useServerPrepStmts=true&rewriteBatchedStatements=true
+    url: jdbc:postgresql://localhost:5432/excel
     username: Vlad
     password: 12345
   jpa:
@@ -43,13 +65,20 @@ spring:
 #      max-file-size: 60MB
 #      max-request-size: 60MB
 
+import:
+  item:
+    batch-size: 10000
 
 topic:
   import:
     task:
-      update-status: import.task.update.status
+      update-status: otus.excel.import.task.update.status
       update-status-group-id: update-status.1
-    item: import.item
+    item: otus.excel.import
+
+service-settings:
+  executor:
+    import-pool-size: 6
 
 
 service:

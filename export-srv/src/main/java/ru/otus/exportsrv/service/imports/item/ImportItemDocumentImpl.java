@@ -5,7 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import ru.otus.exportsrv.config.executor.ImportExecutorService;
 import ru.otus.exportsrv.kafka.producer.ImportItemProducer;
 import ru.otus.exportsrv.model.ImportItemBarcodeProcessData;
 import ru.otus.exportsrv.model.ImportItemPriceProcessData;
@@ -31,7 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -45,8 +46,10 @@ import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 @RequiredArgsConstructor
 public class ImportItemDocumentImpl implements ImportDocumentProcessor {
 
-    public static final int BATCH_SIZE = 5_000;
+    @Value("${import.item.batch-size:5000}")
+    private int batchSize;
 
+    private final ImportExecutorService importExecutorService;
     private final ImportItemProcessor importItemProcessorImpl;
     private final ImportItemBarcodeProcessor importItemBarcodeProcessorImpl;
     private final ImportItemPriceProcessor importItemPriceProcessorImpl;
@@ -66,7 +69,7 @@ public class ImportItemDocumentImpl implements ImportDocumentProcessor {
                 .collect(Collectors.toMap(SheetDetailDto::getImportObject, Function.identity()));
 
         List<ImportTaskErrorAddDto> errors = new ArrayList<>();
-        ExecutorService executorService = Executors.newFixedThreadPool(3);
+        ExecutorService executorService = importExecutorService.getExecutorService();
 
         // Use CompletableFuture for asynchronous processing
         var itemSheetDetail = sheetNameSettingMap.get(ImportObject.ITEM);
@@ -91,8 +94,6 @@ public class ImportItemDocumentImpl implements ImportDocumentProcessor {
         List<ItemImportDto> itemImports = itemProcessData.getItems();
         Map<String, List<ImportItemBarcodeDto>> itemBarcodeMap = barcodeProcessData.getItemBarcodes();
         Map<String, List<ImportItemPriceDto>> itemPriceMap = priceProcessData.getItemPriceMap();
-
-        executorService.shutdown();
 
         if (!errors.isEmpty()) {
             updateImportTask(importTaskId, errors);
@@ -176,14 +177,14 @@ public class ImportItemDocumentImpl implements ImportDocumentProcessor {
 
     private void batchSend(long importTaskId, List<ItemImportDto> items) {
 
-        List<List<ItemImportDto>> partition = ListUtils.partition(items, BATCH_SIZE);
+        List<List<ItemImportDto>> partition = ListUtils.partition(items, batchSize);
         int size = partition.size();
         for (var importItems : partition) {
             var itemImportData = ItemImportData.builder()
                     .importTaskId(importTaskId)
                     .isLast(size == 1)
                     .items(importItems).build();
-            log.info("Send message: {} from: {}",  partition.size() - size, partition.size());
+            log.info("Send message: {} from: {}", partition.size() - size, partition.size());
             importItemProducer.sendMessage(itemImportData);
             size--;
         }
